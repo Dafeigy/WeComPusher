@@ -19,11 +19,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { toast } from 'vue-sonner'
-import { Settings, Send, AtSign,History } from 'lucide-vue-next';
+import { Settings, Send, AtSign, History, MessageSquareShare, MessageSquare } from 'lucide-vue-next';
 
+import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { verify } from 'crypto';
-
+const router = useRouter();
 
 const text_to_push = ref("")
 const group_to_push = ref(["测试群A","测试群B","测试群C"])
@@ -31,13 +32,18 @@ const dialogOpen = ref(false)
 
 const user_pwd = ref("")
 
+const handleSettingsButtonClick = ()=>{
+    router.push('/settings')
+}
+
 const handle_submit = () => {
   if (text_to_push.value.length !== 0) {
     dialogOpen.value = true
   } else {
     // 使用 sonner 的 toast
     toast.error('错误', {
-        description: '发版内容和发送群组不能为空',
+        description: '群发内容和发送群组不能为空。',
+        duration: 2000,
         action: {
           label: '取消',
         },
@@ -64,20 +70,23 @@ const verify_pwd = ()=> {
 
 </script>
 <template>
-    <div id="container" class="w-screen h-screen flex flex-col">
-        <div id="header" class="px-4 w-full flex">
-            logo
-        </div>
-        <div id="user" class="w-full p-4">
-            <textarea name="userinput" id="userinput" rows="12" class="w-full border-1 rounded-md text-md p-2 resize-none"
-            placeholder="输入发版内容..." v-model="text_to_push"></textarea>
+    <div id="container" class="w-screen h-screen flex flex-col transition-all! duration-400! ease-in-out!">
+        <header class="w-full h-16 flex items-center justify-start p-4">
+            <div class="flex flex-col justify-start mx-1 ">
+                <p class="text-2xl font-bold flex justify-start items-center"><MessageSquareShare class="mr-2"/>WecomX</p>
+                <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
+            </div>
+        </header>
+        <div id="user" class="w-full px-4 py-2 h-75">
+            <textarea name="userinput" id="userinput" class="h-full w-full border rounded-md text-md p-2 resize-none"
+            placeholder="输入群发内容..." v-model="text_to_push"></textarea>
         </div>
         <div id="control" class="w-full flex">
             <div id="navigation" class="w-1/2 px-4">
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger>
-                        <Button class="mx-1/2 " size="sm" variant="ghost" ><Settings/></Button>
+                        <Button class="mx-1/2 " size="sm" variant="ghost" @click="handleSettingsButtonClick"><Settings/></Button>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>设置</p>
@@ -107,7 +116,7 @@ const verify_pwd = ()=> {
                 
             </div>
             <div id="send" class="w-1/2 flex justify-end px-4">
-                <Button variant="outline" class="p-0 m-0" @click="handle_submit()">
+                <Button variant="default" class="p-0 m-0" @click="handle_submit()">
                     <Send/>推送
                 </Button>
                 <Dialog 
