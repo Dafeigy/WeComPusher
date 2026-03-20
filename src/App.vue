@@ -1,20 +1,12 @@
 <script setup lang="ts">
-// import { ref } from "vue";
-// import { invoke } from "@tauri-apps/api/core";
+import { RouterView } from 'vue-router';
+import 'vue-sonner/style.css'
+import { Toaster } from '@/components/ui/sonner'
 
-// const greetMsg = ref("");
-// const name = ref("");
-
-// async function greet() {
-//   // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-//   greetMsg.value = await invoke("greet", { name: name.value });
-// }
 
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold underline bg-red-400">
-    Hello world!
-  </h1>
-  <Button>Click me</Button>
+  <RouterView />  
+  <Toaster />
 </template>

@@ -1,5 +1,5 @@
 {
-  "name": "mousika",
+  "name": "wecom_announcer",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -13,14 +13,16 @@
     "@tailwindcss/vite": "^4.1.17",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
-    "@vueuse/core": "^14.0.0",
+    "@vueuse/core": "^14.2.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.554.0",
-    "reka-ui": "^2.6.0",
+    "reka-ui": "^2.9.2",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.17",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-router": "^5.0.4",
+    "vue-sonner": "^2.0.9"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
