@@ -22,6 +22,7 @@ import GroupItem from './GroupItem.vue'
 
 const selectedGroups = ref<string[]>([])
 const dialogOpen = ref(false)
+const initialSelection = ref<string[]>([])
 
 const emit = defineEmits<{
   update: [value: string[]]
@@ -32,15 +33,25 @@ const handleModelUpdate = (val: string[]) => {
   selectedGroups.value = val
 }
 
+const handleOpen = () => {
+  initialSelection.value = [...selectedGroups.value]
+}
+
 const handleConfirm = () => {
   console.log('SelectGroup 准备发送:', selectedGroups.value)
   emit('update', selectedGroups.value)
   dialogOpen.value = false
 }
+
+const handleCancel = () => {
+  selectedGroups.value = [...initialSelection.value]
+  dialogOpen.value = false
+}
+
 </script>
 
 <template>
-  <Dialog v-model:open="dialogOpen">
+  <Dialog v-model:open="dialogOpen" @update:open="(val) => val && handleOpen()">
     <form @submit.prevent>
       <DialogTrigger as-child>
         <Button variant="ghost">
@@ -75,7 +86,7 @@ const handleConfirm = () => {
         </div>
         <DialogFooter>
           <DialogClose as-child>
-            <Button variant="outline">
+            <Button variant="outline" @click="handleCancel">
               取消
             </Button>
           </DialogClose>
