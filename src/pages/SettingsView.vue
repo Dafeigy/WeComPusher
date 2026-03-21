@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Settings, ArrowLeft, PlusCircle, Edit } from 'lucide-vue-next';
+import { Settings, ArrowLeft, PlusCircle, Edit, Trash, Save } from 'lucide-vue-next';
 import Separator from '@/components/ui/separator/Separator.vue';
 import Button from '@/components/ui/button/Button.vue';
 import { useRouter } from 'vue-router';
 import Input from '@/components/ui/input/Input.vue';
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
+import { useGroupData } from '@/composables/useGroupData'
 import {
   Tooltip,
   TooltipContent,
@@ -23,31 +24,7 @@ import {
 
 const isEdit = ref(true)
 
-const group_data = reactive([
-  {
-    name: '今天晚上吃什么-大家讨论',
-    url: 'https://example.com/s11234123aasd2q2345q12',
-    tags: '测试',
-
-  },
-  {
-    name: 'PDD助力砍一刀',
-    url: 'https://example.com/s1ybo2938yro12983iyro9182h3broiu',
-    tags: '测试',
-  },
-  {
-    name: '工作内部交流群',
-    url: 'https://example.com/sq1234v9rt8yaw8oueyro2r5qwerfqwe',
-    tags: '测试',
-
-  },
-  {
-    name: '项目讨论大群',
-    url: 'https://example.com/s09a8hwydeifouygo 2ieufycgoaiw',
-    tags: '测试',
-
-  }
-])
+const { group_data } = useGroupData()
 
 
 const router = useRouter()
@@ -66,23 +43,29 @@ const routeToHome = ()=> {
             </div>
         </header>
         <div class="w-[90%] mx-4 py-2 flex items-center">
-            <p class="text-md text-foreground/50 select-none px-2 ">群组管理</p><Button variant="outline" size="icon-sm" @click="()=>isEdit = !isEdit"><Edit/></Button>
+            <p class="text-md text-foreground/50 select-none px-2 ">群组管理</p>
+            <Button variant="outline" size="icon-sm" @click="()=>isEdit = !isEdit">
+                <Edit v-if="isEdit"></Edit>
+                <Save v-else></Save>
+            </Button>
         </div>
         <div class="w-[90%] h-76! mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl">
             <div class="flex px-4 w-full">
                 <Table class="">
                     <TableHeader >
                     <TableRow>
+                        <TableHead class=""></TableHead>
                         <TableHead>群聊名称</TableHead>
                         <TableHead >URL</TableHead>
-                        <TableHead>标签</TableHead>
+
                     </TableRow>
                     </TableHeader>
                     <TableBody>
                         <TableRow v-for="(group,index) in group_data" :key="index">
+                            <TableCell class="w-3"><Button size="icon-sm" variant="ghost" class="cursor-pointer"><Trash/></Button></TableCell>
                             <TableCell class="font-medium"><Input type="text" v-model="group.name" :disabled="isEdit"></Input></TableCell>
                             <TableCell><Input v-model="group.url" type="password" :disabled="isEdit"></Input></TableCell>
-                            <TableCell><Input type="text" v-model="group.tags" :disabled="isEdit"></Input></TableCell>
+                            
                         </TableRow>
                     </TableBody>
                     <!-- <TableFooter> -->

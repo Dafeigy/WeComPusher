@@ -8,8 +8,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog'
+import DLButton from '@/components/general/ToggleLightDarkButton.vue'
+import SelectGroup from '@/components/SelectGroup.vue';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -19,21 +20,28 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { toast } from 'vue-sonner'
-import { Settings, Send, AtSign, History, MessageSquareShare, MessageSquare } from 'lucide-vue-next';
+import { Settings, Send, AtSign, MessageSquareShare } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { verify } from 'crypto';
+import { useGroupData } from '@/composables/useGroupData'
+
+const { group_data } = useGroupData()
 const router = useRouter();
 
 const text_to_push = ref("")
-const group_to_push = ref(["测试群A","测试群B","测试群C"])
+const group_to_push = ref<string[]>([])
 const dialogOpen = ref(false)
 
 const user_pwd = ref("")
 
 const handleSettingsButtonClick = ()=>{
     router.push('/settings')
+}
+
+const handleGroupUpdate = (val: string[]) => {
+  console.log('选中的群组:', val)
+  group_to_push.value = val
 }
 
 const handle_submit = () => {
@@ -93,23 +101,14 @@ const verify_pwd = ()=> {
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
+                <DLButton></DLButton>
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger>
-                        <Button class="mx-1/2 " size="sm" variant="ghost"><History/></Button>
+                        <SelectGroup @update="handleGroupUpdate"></SelectGroup>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>发版历史</p>
-                    </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                    <Tooltip>
-                    <TooltipTrigger>
-                        <Button class="mx-1/2 " size="sm" variant="ghost"><AtSign/></Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        <p>选择发送对象</p>
+                        <p>选择发送对象：{{ group_to_push.length }}个</p>
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
