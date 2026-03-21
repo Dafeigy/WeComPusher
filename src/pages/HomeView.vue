@@ -77,11 +77,11 @@ const verify_pwd = ()=> {
                 <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
             </div>
         </header>
-        <div id="user" class="w-full px-4 py-2 h-75">
+        <div id="user" class="w-full px-4 py-2 h-76">
             <textarea name="userinput" id="userinput" class="h-full w-full border rounded-md text-md p-2 resize-none"
             placeholder="输入群发内容..." v-model="text_to_push"></textarea>
         </div>
-        <div id="control" class="w-full flex">
+        <div id="control" class="w-full flex h-12 items-center mb-0">
             <div id="navigation" class="w-1/2 px-4">
                 <TooltipProvider>
                     <Tooltip>

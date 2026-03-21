@@ -58,7 +58,7 @@ const routeToHome = ()=> {
 </script>
 
 <template>
-    <div id="container" class="w-screen h-screen flex flex-col transition-all! duration-400 justify-center items-center">
+    <div id="container" class="w-screen h-screen flex flex-col transition-all! duration-400">
         <header class="w-full h-16 flex items-center justify-start p-4">
             <div class="flex flex-col justify-start mx-1">
                 <p class="text-2xl font-bold flex justify-start items-center"><Settings class="mr-2"/>偏好与设置</p>
@@ -68,8 +68,8 @@ const routeToHome = ()=> {
         <div class="w-[90%] mx-4 py-2 flex items-center">
             <p class="text-md text-foreground/50 select-none px-2 ">群组管理</p><Button variant="outline" size="icon-sm" @click="()=>isEdit = !isEdit"><Edit/></Button>
         </div>
-        <div class="w-[90%] h-75 mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl">
-            <div class="flex mt-2 px-4 w-full">
+        <div class="w-[90%] h-76! mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl">
+            <div class="flex px-4 w-full">
                 <Table class="">
                     <TableHeader >
                     <TableRow>
@@ -97,7 +97,7 @@ const routeToHome = ()=> {
         
         </div>
         
-        <div class="w-full flex px-4">
+        <div class="w-full flex px-4 h-12 mb-1">
         <TooltipProvider>
             <Tooltip>
             <TooltipTrigger>
@@ -109,7 +109,7 @@ const routeToHome = ()=> {
             </Tooltip>
         </TooltipProvider>
         </div>  
-        </div>
+    </div>
 </template>
 
 <style>
