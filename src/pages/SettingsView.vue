@@ -56,7 +56,7 @@ const routeToHome = ()=> {
                     <TableRow>
                         <TableHead class=""></TableHead>
                         <TableHead>群聊名称</TableHead>
-                        <TableHead >URL</TableHead>
+                        <TableHead >Webhook URL</TableHead>
 
                     </TableRow>
                     </TableHeader>

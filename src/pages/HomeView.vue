@@ -20,11 +20,12 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { toast } from 'vue-sonner'
-import { Settings, Send, AtSign, MessageSquareShare } from 'lucide-vue-next';
+import { Settings, Send, MessageSquareShare } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useGroupData } from '@/composables/useGroupData'
+import { sendMessage } from '@/composables/sendMessage'
 
 const { group_data } = useGroupData()
 const router = useRouter();
@@ -45,7 +46,7 @@ const handleGroupUpdate = (val: string[]) => {
 }
 
 const handle_submit = () => {
-  if (text_to_push.value.length !== 0) {
+  if (text_to_push.value.length !== 0 && group_to_push.value.length !== 0) {
     dialogOpen.value = true
   } else {
     // 使用 sonner 的 toast
@@ -60,12 +61,37 @@ const handle_submit = () => {
   }
 }
 
+import key from '@/composables/key'
+
+const send_group_message = async () => {
+    for (const group of group_to_push.value) {
+        const res = await sendMessage({
+            url: group + key,
+            text: text_to_push.value,
+        })
+        if (res.errcode !== 0){
+            toast.error('错误', {
+            description: res.errmsg,
+            duration:2000,
+          })
+        }
+        else{
+            toast.success('发送成功', {
+            description: '发送成功',
+            duration:2000,
+          })
+        }
+        console.log(res)
+    }
+}
+
 const verify_pwd = ()=> {
     if (user_pwd.value == "123456"){
         toast.success('发送成功', {
         description: '推送任务已发起',
         duration:2000,
       })
+      send_group_message()
       dialogOpen.value = false
     }
     else{
@@ -86,7 +112,7 @@ const verify_pwd = ()=> {
             </div>
         </header>
         <div id="user" class="w-full px-4 py-2 h-76">
-            <textarea name="userinput" id="userinput" class="h-full w-full border rounded-md text-md p-2 resize-none"
+            <textarea name="userinput" id="userinput" class="h-full w-full border rounded-md text-md p-4 resize-none"
             placeholder="输入群发内容..." v-model="text_to_push"></textarea>
         </div>
         <div id="control" class="w-full flex h-12 items-center mb-0">
