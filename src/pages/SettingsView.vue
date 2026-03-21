@@ -79,10 +79,10 @@ const routeToHome = ()=> {
                     </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow v-for="group in group_data" :key="group.name">
-                            <TableCell class="font-medium"> <Input v-model="group.name" :disabled="isEdit"></Input></TableCell>
+                        <TableRow v-for="(group,index) in group_data" :key="index">
+                            <TableCell class="font-medium"><Input type="text" v-model="group.name" :disabled="isEdit"></Input></TableCell>
                             <TableCell><Input v-model="group.url" type="password" :disabled="isEdit"></Input></TableCell>
-                            <TableCell><Input v-model="group.tags" :disabled="isEdit"></Input></TableCell>
+                            <TableCell><Input type="text" v-model="group.tags" :disabled="isEdit"></Input></TableCell>
                         </TableRow>
                     </TableBody>
                     <!-- <TableFooter> -->

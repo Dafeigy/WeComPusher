@@ -2,38 +2,49 @@
 import type { HTMLAttributes } from "vue"
 import { useVModel } from "@vueuse/core"
 import { cn } from "@/lib/utils"
-import { ref } from 'vue'
-import {Eye, EyeClosed} from "lucide-vue-next"
+import { ref } from "vue";
+import { Eye, EyeClosed } from "lucide-vue-next";
+const showPassword = ref(false)
 
 const props = defineProps<{
-    defaultValue?: string | number
-    modelValue?: string | number
-    class?: HTMLAttributes['class']
-    type: string
+  defaultValue?: string | number
+  modelValue?: string | number
+  class?: HTMLAttributes["class"]
+  disabled?: boolean
+  type: string
 }>()
 
 const emits = defineEmits<{
-    (e: 'update:modelValue', payload: string | number): void
+  (e: "update:modelValue", payload: string | number): void
 }>()
 
-const modelValue = useVModel(props, 'modelValue', emits, {
-    passive: true,
-    defaultValue: props.defaultValue,
+const modelValue = useVModel(props, "modelValue", emits, {
+  passive: true,
+  defaultValue: props.defaultValue,
 })
-
-const showPassword = ref(false)
 </script>
 
 <template>
-  <div class="relative">
-    <input v-model="modelValue"
-           :class="cn('flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50', props.class) + (type==='password'? ' pr-9': '')"
-           :type="showPassword ? 'text' : type">
-    <div v-if="type === 'password'"
+<div class="relative">
+    <input
+    v-model="modelValue"
+    data-slot="input"
+    :type="showPassword ? 'text' : type"
+    :class="cn(
+      'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+      'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]'+ (type==='password'? ' pr-9': ''),
+      
+      'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive',
+      props.class,
+    )"
+    :disabled="props.disabled"
+    >
+    <div v-if="props.type === 'password'"
          class="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-500 transition-colors"
          @click="showPassword = !showPassword">
-        <EyeClosed v-if="!showPassword" class="w-4 h-4"/>
+        <EyeClosed v-if="showPassword" class="w-4 h-4"/>
         <Eye v-else class="w-4 h-4"/>
     </div>
 </div>
+  
 </template>
