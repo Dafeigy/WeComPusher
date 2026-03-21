@@ -14,9 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
+
 import {AtSign} from 'lucide-vue-next';
 import GroupItem from './GroupItem.vue'
 

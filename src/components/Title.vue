@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Minus, Maximize2, X } from "lucide-vue-next";
+import { Minus, X } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { getCurrentWindow  } from "@tauri-apps/api/window";
 
@@ -7,10 +7,6 @@ const appWindow = getCurrentWindow();
 
 const minimize = async() => {
   await appWindow.minimize();
-};
-
-const maximize = async() => {
-  await appWindow.toggleMaximize();
 };
 
 const close = async () => {

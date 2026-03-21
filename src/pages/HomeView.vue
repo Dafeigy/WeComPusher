@@ -24,10 +24,8 @@ import { Settings, Send, MessageSquareShare } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { useGroupData } from '@/composables/useGroupData'
 import { sendMessage } from '@/composables/sendMessage'
 
-const { group_data } = useGroupData()
 const router = useRouter();
 
 const text_to_push = ref("")
@@ -61,12 +59,11 @@ const handle_submit = () => {
   }
 }
 
-import key from '@/composables/key'
 
 const send_group_message = async () => {
     for (const group of group_to_push.value) {
         const res = await sendMessage({
-            url: group + key,
+            url: group,
             text: text_to_push.value,
         })
         if (res.errcode !== 0){

@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { useGroupData } from '@/composables/useGroupData'
-
-const { group_data } = useGroupData()
 import {
   Dialog,
   DialogClose,

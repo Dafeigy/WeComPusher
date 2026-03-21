@@ -15,7 +15,7 @@ const mode = useColorMode()
 <TooltipProvider>
     <Tooltip>
     <TooltipTrigger>
-        <Button class="mx-1/2 " size="sm" variant="ghost" @click="mode = mode === 'dark' ? 'light' : 'dark'"><Moon v-if="mode === 'light'"></Moon><Sun v-else></Sun>{{ mode.value }}</Button>
+        <Button class="mx-1/2 " size="sm" variant="ghost" @click="mode = mode === 'dark' ? 'light' : 'dark'"><Moon v-if="mode === 'light'"></Moon><Sun v-else></Sun></Button>
     </TooltipTrigger>
     <TooltipContent>
         <p v-if="mode === 'light'">切换暗色模式</p>
