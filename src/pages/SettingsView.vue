@@ -20,11 +20,21 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+
+import AddGroupItem from '@/components/AddGroupItem.vue'
 import { toast } from 'vue-sonner'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 const isEdit = ref(true)
 
-const { group_data, add, remove, update, loadGroups } = useGroupData()
+const { group_data, add, remove, loadGroups, saveAllGroups } = useGroupData()
 
 const router = useRouter()
 
@@ -32,45 +42,39 @@ const routeToHome = ()=> {
     router.push("/")
 }
 
+const deleteDialogOpen = ref(false)
+const groupToDelete = ref<Group | null>(null)
+
 const handleDelete = async (group: Group) => {
-  if (confirm(`确定要删除群组 "${group.name}" 吗？`)) {
-    try {
-      if (group.id) {
-        await remove(group.id)
-        toast.success('删除成功')
-      }
-    } catch (e) {
-      toast.error('删除失败')
-    }
+  groupToDelete.value = group
+  deleteDialogOpen.value = true
+}
+
+const confirmDelete = async () => {
+  if (!groupToDelete.value?.id) return
+  
+  try {
+    await remove(groupToDelete.value.id)
+    toast.success('删除成功')
+    deleteDialogOpen.value = false
+    groupToDelete.value = null
+  } catch (e) {
+    toast.error('删除失败')
   }
 }
 
 const handleSave = async () => {
-  try {
-    for (const group of group_data) {
-      if (group.id) {
-        await update(group)
-      }
-    }
+  const result = await saveAllGroups(group_data)
+  if (result.success) {
     toast.success('保存成功')
     isEdit.value = true
-  } catch (e) {
-    toast.error('保存失败')
+  } else {
+    toast.error(result.error ?? '保存失败')
   }
 }
 
-const handleAdd = async () => {
-  const newGroup: Omit<Group, 'id'> = {
-    name: '新群组',
-    url: ''
-  }
-  try {
-    await add(newGroup)
-    toast.success('添加成功')
-    await loadGroups()
-  } catch (e) {
-    toast.error('添加失败')
-  }
+const toggleEditMode = () => {
+  isEdit.value = !isEdit.value
 }
 </script>
 
@@ -84,12 +88,26 @@ const handleAdd = async () => {
         </header>
         <div class="w-[90%] mx-4 py-2 flex items-center">
             <p class="text-md text-foreground/50 select-none px-2 ">群组管理</p>
-            <Button variant="outline" size="icon-sm" @click="handleSave" v-if="!isEdit">
-                <Save></Save>
-            </Button>
-            <Button variant="outline" size="icon-sm" @click="()=>isEdit = !isEdit" v-else>
-                <Edit></Edit>
-            </Button>
+            
+            
+
+            <TooltipProvider>
+                <Tooltip>
+                <TooltipTrigger>
+                    <Button variant="outline" size="icon-sm" @click="handleSave" v-if="!isEdit">
+                        <Save class=""></Save>
+                    </Button>
+                    <Button variant="outline" size="icon-sm" @click="toggleEditMode" v-else>
+                        <Edit></Edit>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                    <p v-if="!isEdit">保存</p>
+                    <p v-else>编辑</p>
+                </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+            
         </div>
         <div class="w-[90%] h-76! mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl">
             <div class="flex px-4 w-full">
@@ -99,7 +117,7 @@ const handleAdd = async () => {
                         
                         <TableHead>群聊名称</TableHead>
                         <TableHead >Webhook URL</TableHead>
-                        <TableHead >操作</TableHead>
+                        <TableHead v-if="!isEdit">操作</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -107,16 +125,16 @@ const handleAdd = async () => {
                             
                             <TableCell class="font-medium"><Input type="text" v-model="group.name" :disabled="isEdit"></Input></TableCell>
                             <TableCell><Input v-model="group.url" type="password" :disabled="isEdit"></Input></TableCell>
-                            <TableCell>
+                            <TableCell v-if="!isEdit">
                                 <Button size="icon-sm" variant="ghost" class="cursor-pointer" @click="handleDelete(group)" :disabled="isEdit">
-                                    <Trash/>
+                                    <Trash class="text-red-400"/>
                                 </Button>
                             </TableCell>
                         </TableRow>
                     </TableBody>
                     <!-- <TableRow> -->
-                        <TableCell colspan="3" class="text-center">
-                        <Button variant="outline" size="sm" @click="handleAdd"><p>新增群组</p><PlusCircle/></Button>
+                        <TableCell colspan="3" class="text-center" :class="{'hidden':isEdit}">
+                            <AddGroupItem @added="loadGroups"></AddGroupItem>
                         </TableCell>
                     <!-- </TableRow> -->
                 </Table>
@@ -136,6 +154,21 @@ const handleAdd = async () => {
             </Tooltip>
         </TooltipProvider>
         </div>  
+
+        <Dialog v-model:open="deleteDialogOpen">
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>删除群组</DialogTitle>
+              <DialogDescription>
+                确定要删除群组 "{{ groupToDelete?.name }}" 吗？此操作无法撤销。
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" @click="deleteDialogOpen = false">取消</Button>
+              <Button variant="destructive" @click="confirmDelete">删除</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
     </div>
 </template>
 

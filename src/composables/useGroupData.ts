@@ -37,6 +37,25 @@ export function useGroupData() {
     await loadGroups()
   }
 
+  const saveAllGroups = async (groups: Group[]) => {
+    isLoading.value = true
+    error.value = null
+    try {
+      for (const group of groups) {
+        if (group.id) {
+          await updateGroup(group)
+        }
+      }
+      await loadGroups()
+      return { success: true }
+    } catch (e) {
+      error.value = e instanceof Error ? e.message : '保存失败'
+      return { success: false, error: error.value }
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   onMounted(() => {
     loadGroups()
   })
@@ -48,6 +67,7 @@ export function useGroupData() {
     loadGroups,
     add,
     update,
-    remove
+    remove,
+    saveAllGroups
   }
 }
