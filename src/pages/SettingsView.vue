@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings, ArrowLeft, PlusCircle, Edit, Trash, Save, RotateCcw } from 'lucide-vue-next';
+import { Settings, ArrowLeft, Edit, Trash, Save, RotateCcw } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import { useRouter } from 'vue-router';
 import Input from '@/components/ui/input/Input.vue';
@@ -35,7 +35,7 @@ import { resetAllData } from '@/composables/auth'
 
 const isEdit = ref(true)
 
-const { group_data, add, remove, loadGroups, saveAllGroups } = useGroupData()
+const { group_data, remove, loadGroups, saveAllGroups } = useGroupData()
 
 const router = useRouter()
 

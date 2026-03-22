@@ -24,7 +24,7 @@ import { toast } from 'vue-sonner'
 import { Settings, Send, MessageSquareShare, BookImage, WandSparkles } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
-import { ref, watch, onMounted, computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { sendMessage } from '@/composables/sendMessage'
 import { useGroupData } from '@/composables/useGroupData'
 import { isPasswordSet, setPassword, verifyPassword } from '@/composables/auth'
