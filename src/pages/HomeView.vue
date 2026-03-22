@@ -40,6 +40,14 @@ const user_pwd = ref("")
 const atAllPrefenrece = ref(false)
 const GROUP_STORAGE_KEY = 'wecomx_group_to_push'
 
+const isNewsMode = ref(false)
+const newsArticle = ref({
+  title: "",
+  description: "",
+  url: "",
+  picurl: ""
+})
+
 const isPasswordSetFlag = ref(false)
 const showSetPasswordDialog = ref(false)
 const new_password = ref("")
@@ -83,43 +91,100 @@ const handleGroupUpdate = (val: string[]) => {
   group_to_push.value = val
 }
 
+const toggleNewsMode = () => {
+  isNewsMode.value = !isNewsMode.value
+}
+
 const handle_submit = () => {
-  if (text_to_push.value.length !== 0 && group_to_push.value.length !== 0) {
-    dialogOpen.value = true
-  } else {
-    // 使用 sonner 的 toast
-    toast.error('错误', {
-        description: '群发内容和发送群组不能为空。',
+  if (isNewsMode.value) {
+    if (!newsArticle.value.title || !newsArticle.value.description || !newsArticle.value.url) {
+      toast.error('错误', {
+        description: '图文链接模式下，标题、描述和链接不能为空。',
         duration: 2000,
         action: {
           label: '取消',
         },
       })
-    
+      return
+    }
+  } else {
+    if (text_to_push.value.length === 0) {
+      toast.error('错误', {
+        description: '群发内容不能为空。',
+        duration: 2000,
+        action: {
+          label: '取消',
+        },
+      })
+      return
+    }
   }
+  
+  if (group_to_push.value.length === 0) {
+    toast.error('错误', {
+      description: '发送群组不能为空。',
+      duration: 2000,
+      action: {
+        label: '取消',
+      },
+    })
+    return
+  }
+  
+  dialogOpen.value = true
 }
 
 
 const send_group_message = async () => {
+    let successCount = 0
+    let failCount = 0
+    
     for (const group of group_to_push.value) {
-        const res = await sendMessage({
+        let messageData: any = {
             url: group,
-            text: text_to_push.value,
             isAtAll: atAllPrefenrece.value
+        }
+        
+        if (isNewsMode.value) {
+            messageData.msgtype = 'news'
+            messageData.news = {
+                articles: [{
+                    title: newsArticle.value.title,
+                    description: newsArticle.value.description,
+                    url: newsArticle.value.url,
+                    picurl: newsArticle.value.picurl
+                }]
+            }
+        } else {
+            messageData.text = text_to_push.value
+        }
+        
+        try {
+            const res = await sendMessage(messageData)
+            if (res.errcode !== 0){
+                failCount++
+                console.error(`发送失败 ${group}:`, res.errmsg)
+            }
+            else{
+                successCount++
+            }
+            console.log(res)
+        } catch (e) {
+            failCount++
+            console.error(`发送异常 ${group}:`, e)
+        }
+    }
+    
+    if (failCount === 0) {
+        toast.success('发送完成', {
+            description: `成功发送 ${successCount} 个群聊`,
+            duration: 2000,
         })
-        if (res.errcode !== 0){
-            toast.error('错误', {
-            description: res.errmsg,
-            duration:2000,
-          })
-        }
-        else{
-            toast.success('发送成功', {
-            description: '发送成功',
-            duration:2000,
-          })
-        }
-        console.log(res)
+    } else {
+        toast.error('发送完成', {
+            description: `成功 ${successCount} 个，失败 ${failCount} 个`,
+            duration: 2000,
+        })
     }
 }
 
@@ -206,13 +271,70 @@ const handleSetPassword = async () => {
         </header>
         <div id="user" class="w-[95%] rounded-xl h-76 flex border border-gray-300 flex-col">
             <div class="h-[1ch] text-md"></div>
-            <textarea name="userinput" id="userinput" class=" h-full w-full text-md resize-none px-[1ch] text-primary/72"
-            placeholder="输入群发内容..." v-model="text_to_push"></textarea>
+            <Transition name="fade" mode="out-in">
+                <template v-if="!isNewsMode">
+                    <textarea name="userinput" id="userinput" class="h-full w-full text-md resize-none px-[1ch] text-primary/72"
+                    placeholder="输入群发内容..." v-model="text_to_push"></textarea>
+                </template>
+                <template v-else>
+                    <div class="h-full w-full px-[1ch] flex items-center justify-between">
+                        <div class="grid grid-cols-1 gap-2 mt-[1ch] px-2">
+                            <div class="flex">
+                            <Label>推文标题</Label>
+                            <Input 
+                            type="text"
+                            v-model="newsArticle.title" 
+                            placeholder="标题（必填）" 
+                            class="text-md mx-2"
+                        />
+                        </div>
+                        
+                        <div class="flex">
+                            <Label>推文简介 </Label>
+                            <Input 
+                            type="text"
+                            v-model="newsArticle.description" 
+                            placeholder="描述（必填）" 
+                            class="text-md mx-2"
+                        />
+                        </div>
+                        
+                        <div class="flex">
+                            <Label>推文链接</Label>
+                            <Input 
+                            type="text"
+                            v-model="newsArticle.url" 
+                            placeholder="跳转链接（必填）" 
+                            class="text-md mx-2"
+                        />
+                        </div>
+                        
+                        <div class="flex">
+                            <Label>封面 URL</Label>
+                            <Input 
+                            type="text"
+                            v-model="newsArticle.picurl" 
+                            placeholder="图片链接（可选）" 
+                            class="text-md mx-2"
+                        />
+                        </div>
+                        </div>
+                        <div class="rounded-lg bg-secondary w-[50%] flex flex-col overflow-hidden z-40 top-[calc(1ch+1rem)] relative">
+                            <img :src="newsArticle.picurl" alt="" srcset="" class="max-h-[180px] w-full">
+                            <p class="text-lg px-2 py-1">{{ newsArticle.title.length==0?'无标题':newsArticle.title }}</p>
+                            <p class="text-sm text-primary/80 p-2">{{ newsArticle.description.length==0?'无简介':newsArticle.description }}</p>
+                        </div>  
+                    </div>
+                </template>
+            </Transition>
             <div class="z-25 select-none p-[1ch]">
                 <TooltipProvider class="modeToggle">
                     <Tooltip>
                     <TooltipTrigger>
-                        <Button class="cursor-pointer mx-1 rounded-2xl" variant="outline"><BookImage class="w-2 h-2"/><p class="text-xs">图文链接模式</p></Button>
+                        <Button class="cursor-pointer mx-1 rounded-2xl" variant="outline" @click="toggleNewsMode">
+                            <BookImage class="w-2 h-2"/>
+                            <p class="text-xs">{{ isNewsMode ? '文字编辑模式' : '图文编辑模式' }}</p>
+                        </Button>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>切换至图文链接编辑模式，<br>类似推文推送。</p>
@@ -222,10 +344,10 @@ const handleSetPassword = async () => {
                 <TooltipProvider class="AIHelpWrite">
                     <Tooltip>
                     <TooltipTrigger>
-                        <Button class="cursor-pointer mx-1 rounded-2xl" disabled variant="outline"><WandSparkles class="w-2 h-2"/><p class="text-xs">AI帮写</p></Button>
+                        <Button class="cursor-pointer mx-1 rounded-2xl" disabled variant="outline"><WandSparkles class="w-2 h-2"/><p class="text-xs">AI 帮写</p></Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>开发ing...</p>
+                        <p>开发 ing...</p>
                     </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
@@ -279,11 +401,18 @@ const handleSetPassword = async () => {
                             <Tooltip>
                             <TooltipTrigger as-child>
                                 <a class="underline underline-offset-4 text-primary select-none">
-                                    发版信息
+                                    {{ isNewsMode ? '图文链接' : '发版信息' }}
                                 </a>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>{{text_to_push}}</p>
+                                <template v-if="isNewsMode">
+                                    <p>标题：{{newsArticle.title}}</p>
+                                    <p>描述：{{newsArticle.description}}</p>
+                                    <p>链接：{{newsArticle.url}}</p>
+                                </template>
+                                <template v-else>
+                                    <p>{{text_to_push}}</p>
+                                </template>
                             </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
@@ -301,7 +430,7 @@ const handleSetPassword = async () => {
                             </Tooltip>
                         </TooltipProvider>中
                         </DialogDescription>
-                        <Label><Checkbox v-model="atAllPrefenrece" label="@所有人" />@所有人</Label>
+                        <Label v-if="!isNewsMode"><Checkbox v-model="atAllPrefenrece" label="@所有人" />@所有人</Label>
                         
                     </DialogHeader>
                     <div class="flex items-center gap-2">
@@ -377,5 +506,20 @@ const handleSetPassword = async () => {
 <style scoped>
 textarea{
     outline: none
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 </style>
