@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "wecomx",
-  "version": "1.0.0",
-  "identifier": "com.user.wecomx",
+  "version": "1.0.1",
+  "identifier": "com.NUL4i.wecomx",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
