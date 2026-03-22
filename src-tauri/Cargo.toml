@@ -1,5 +1,5 @@
 [package]
-name = "wecom_announcer"
+name = "wecomx"
 version = "1.0.0"
 description = "A Tauri App"
 authors = ["you"]

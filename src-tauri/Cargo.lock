@@ -4909,7 +4909,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "wecom_announcer"
+name = "wecomx"
 version = "1.0.0"
 dependencies = [
  "hex",

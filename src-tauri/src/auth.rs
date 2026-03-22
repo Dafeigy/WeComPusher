@@ -1,11 +1,5 @@
-use serde::{Deserialize, Serialize};
 use tauri_plugin_store::StoreExt;
 use sha2::{Sha256, Digest};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct AuthData {
-    password_hash: String,
-}
 
 #[tauri::command]
 pub fn is_password_set(app: tauri::AppHandle) -> Result<bool, String> {
