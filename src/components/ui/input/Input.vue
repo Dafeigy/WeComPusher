@@ -29,7 +29,7 @@ const modelValue = useVModel(props, "modelValue", emits, {
     <input
     v-model="modelValue"
     data-slot="input"
-    :type="showPassword ? 'text' : type"
+    :type="props.type === 'password' ? (showPassword ? 'text' : 'password') : type"
     :class="cn(
       'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
       'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]'+ (type==='password'? ' pr-9': ''),
@@ -38,6 +38,7 @@ const modelValue = useVModel(props, "modelValue", emits, {
       props.class,
     )"
     :disabled="props.disabled"
+    :autocomplete="props.type === 'password' ? 'new-password' : undefined"
     >
     <div v-if="props.type === 'password'"
          class="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center cursor-pointer text-gray-400 hover:text-gray-500 transition-colors"
@@ -46,5 +47,37 @@ const modelValue = useVModel(props, "modelValue", emits, {
         <Eye v-else class="w-4 h-4"/>
     </div>
 </div>
-  
 </template>
+
+<style scoped>
+/* 隐藏 Chrome/Edge/Safari 的密码显示按钮 */
+input[type="password"]::-webkit-reveal-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 隐藏 IE/Edge 的密码显示按钮 */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 隐藏 Firefox 的密码显示按钮 */
+input[type="password"]::-moz-show-password,
+input[type="password"]::-moz-password-toggle {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* 隐藏所有浏览器的密码管理器图标 */
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[data-slot="input"][type="password"]::-webkit-auto-fill-button {
+  display: none !important;
+}
+</style>

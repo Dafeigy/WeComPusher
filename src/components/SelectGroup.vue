@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import { useGroupData } from '@/composables/useGroupData'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const { group_data } = useGroupData()
 import {
@@ -22,13 +22,24 @@ const selectedGroups = ref<string[]>([])
 const dialogOpen = ref(false)
 const initialSelection = ref<string[]>([])
 
-const emit = defineEmits<{
-  update: [value: string[]]
+const props = defineProps<{
+  modelValue?: string[]
 }>()
 
+const emit = defineEmits<{
+  update: [value: string[]]
+  'update:modelValue': [value: string[]]
+}>()
+
+watch(() => props.modelValue, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    selectedGroups.value = [...newVal]
+  }
+}, { immediate: true })
+
 const handleModelUpdate = (val: string[]) => {
-  console.log('SelectGroup 收到 v-model 更新:', val)
   selectedGroups.value = val
+  emit('update:modelValue', val)
 }
 
 const handleOpen = () => {
@@ -36,8 +47,8 @@ const handleOpen = () => {
 }
 
 const handleConfirm = () => {
-  console.log('SelectGroup 准备发送:', selectedGroups.value)
   emit('update', selectedGroups.value)
+  emit('update:modelValue', selectedGroups.value)
   dialogOpen.value = false
 }
 
@@ -56,7 +67,7 @@ const handleCancel = () => {
           <AtSign />
         </Button>
       </DialogTrigger>
-      <DialogContent class="max-w-lg w-[600px] min-w-[75%]"
+      <DialogContent class="max-w-lg w-[600px] min-w-[75%] [&>button]:hidden"
                     @open-auto-focus="(e) => e.preventDefault()" 
                     @escape-key-down="(e) => {e.preventDefault()}"
                     @interact-outside="(e)=>{e.preventDefault()}"

@@ -82,15 +82,12 @@ const toggleEditMode = () => {
     <div id="container" class="w-screen h-screen flex flex-col transition-all! duration-400">
         <header class="w-full h-16 flex items-center justify-start p-4">
             <div class="flex flex-col justify-start mx-1">
-                <p class="text-2xl font-bold flex justify-start items-center"><Settings class="mr-2"/>偏好与设置</p>
+                <p class="text-2xl font-bold flex justify-start items-center"><Settings class="mr-2 select-none"/>偏好与设置</p>
                 <p class="text-sm text-gray-400"></p>
             </div>
         </header>
         <div class="w-[90%] mx-4 py-2 flex items-center">
             <p class="text-md text-foreground/50 select-none px-2 ">群组管理</p>
-            
-            
-
             <TooltipProvider>
                 <Tooltip>
                 <TooltipTrigger>

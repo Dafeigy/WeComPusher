@@ -23,7 +23,7 @@ import { toast } from 'vue-sonner'
 import { Settings, Send, MessageSquareShare } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { sendMessage } from '@/composables/sendMessage'
 
 const router = useRouter();
@@ -33,6 +33,23 @@ const group_to_push = ref<string[]>([])
 const dialogOpen = ref(false)
 
 const user_pwd = ref("")
+
+const GROUP_STORAGE_KEY = 'wecomx_group_to_push'
+
+onMounted(() => {
+  const saved = localStorage.getItem(GROUP_STORAGE_KEY)
+  if (saved) {
+    try {
+      group_to_push.value = JSON.parse(saved)
+    } catch (e) {
+      console.error('Failed to parse saved groups:', e)
+    }
+  }
+})
+
+watch(group_to_push, (newVal) => {
+  localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(newVal))
+}, { deep: true })
 
 const handleSettingsButtonClick = ()=>{
     router.push('/settings')
@@ -128,7 +145,7 @@ const verify_pwd = ()=> {
                 <TooltipProvider>
                     <Tooltip>
                     <TooltipTrigger>
-                        <SelectGroup @update="handleGroupUpdate"></SelectGroup>
+                        <SelectGroup v-model="group_to_push" @update="handleGroupUpdate"></SelectGroup>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>选择发送对象：{{ group_to_push.length }}个</p>
@@ -184,7 +201,7 @@ const verify_pwd = ()=> {
                     </DialogHeader>
                     <div class="flex items-center gap-2">
                         <div class="grid flex-1 gap-2">
-                        <Label for="pwd" class="sr-only">
+                        <Label for="pwd" class="sr-only select-none">
                             Link
                         </Label>
                         <Input type="password" id="pwd" v-model="user_pwd" placeholder="请输入管理员密码"/>
