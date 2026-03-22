@@ -95,6 +95,23 @@ const toggleNewsMode = () => {
   isNewsMode.value = !isNewsMode.value
 }
 
+const isValidImageUrl = (url: string): string => {
+  if (!url || url.trim() === '') {
+    return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+  }
+  
+  try {
+    const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+    if (!urlPattern.test(url)) {
+      return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+    }
+    
+    return url
+  } catch (e) {
+    return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+  }
+}
+
 const handle_submit = () => {
   if (isNewsMode.value) {
     if (!newsArticle.value.title || !newsArticle.value.description || !newsArticle.value.url) {
@@ -320,7 +337,7 @@ const handleSetPassword = async () => {
                         </div>
                         </div>
                         <div class="rounded-lg bg-secondary w-[50%] flex flex-col overflow-hidden z-40 top-[calc(1ch+1rem)] relative">
-                            <img :src="newsArticle.picurl" alt="" srcset="" class="max-h-[180px] w-full">
+                            <img :src="isValidImageUrl(newsArticle.picurl)" alt="" srcset="" class="max-h-[180px] w-full h-[180px]">
                             <p class="text-lg px-2 py-1">{{ newsArticle.title.length==0?'无标题':newsArticle.title }}</p>
                             <p class="text-sm text-primary/80 p-2">{{ newsArticle.description.length==0?'无简介':newsArticle.description }}</p>
                         </div>  
