@@ -286,7 +286,7 @@ const handleSetPassword = async () => {
                 <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
             </div>
         </header>
-        <div id="user" class="w-[95%] rounded-xl h-76 flex border border-gray-300 flex-col">
+        <div id="user" class="w-[95%] rounded-xl h-76 flex border  flex-col">
             <div class="h-[1ch] text-md"></div>
             <Transition name="fade" mode="out-in">
                 <template v-if="!isNewsMode">
