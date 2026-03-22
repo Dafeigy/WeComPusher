@@ -337,7 +337,7 @@ const handleSetPassword = async () => {
                         </div>
                         </div>
                         <div class="rounded-lg bg-secondary w-[50%] flex flex-col overflow-hidden z-40 top-[calc(1ch+1rem)] relative">
-                            <img :src="isValidImageUrl(newsArticle.picurl)" alt="" srcset="" class="max-h-[180px] w-full h-[180px]">
+                            <img :src="isValidImageUrl(newsArticle.picurl)" alt="" srcset="" class="max-h-[170px] w-full h-[170px]">
                             <p class="text-lg px-2 py-1">{{ newsArticle.title.length==0?'无标题':newsArticle.title }}</p>
                             <p class="text-sm text-primary/80 p-2">{{ newsArticle.description.length==0?'无简介':newsArticle.description }}</p>
                         </div>  
