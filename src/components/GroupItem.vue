@@ -42,11 +42,12 @@ const toggleGroup = () => {
         ]"
         @click="toggleGroup"
     >
-        <Checkbox
+        <!-- <Checkbox
             :id="group.url"
             :checked="isChecked"
+            :class="{isChecked: 'checked'}"
             class="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700 pointer-events-none"
-        />
+        /> -->
         <div class="gap-1 flex items-center justify-center">
             <p class="text-xs leading-none">
             {{ group.name }}
