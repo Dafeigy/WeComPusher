@@ -1,4 +1,5 @@
 mod group_data;
+mod auth;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -17,7 +18,11 @@ pub fn run() {
             group_data::get_all_groups,
             group_data::add_group,
             group_data::update_group,
-            group_data::delete_group
+            group_data::delete_group,
+            auth::is_password_set,
+            auth::set_password,
+            auth::verify_password,
+            auth::reset_all_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

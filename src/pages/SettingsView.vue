@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Settings, ArrowLeft, PlusCircle, Edit, Trash, Save } from 'lucide-vue-next';
+import { Settings, ArrowLeft, PlusCircle, Edit, Trash, Save, RotateCcw } from 'lucide-vue-next';
 import Button from '@/components/ui/button/Button.vue';
 import { useRouter } from 'vue-router';
 import Input from '@/components/ui/input/Input.vue';
@@ -31,6 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { resetAllData } from '@/composables/auth'
 
 const isEdit = ref(true)
 
@@ -44,6 +45,8 @@ const routeToHome = ()=> {
 
 const deleteDialogOpen = ref(false)
 const groupToDelete = ref<Group | null>(null)
+
+const resetDialogOpen = ref(false)
 
 const handleDelete = async (group: Group) => {
   groupToDelete.value = group
@@ -60,6 +63,34 @@ const confirmDelete = async () => {
     groupToDelete.value = null
   } catch (e) {
     toast.error('删除失败')
+  }
+}
+
+const handleReset = async () => {
+  resetDialogOpen.value = true
+}
+
+const confirmReset = async () => {
+  try {
+    await resetAllData()
+    
+    // 清空前端的 localStorage
+    localStorage.removeItem('wecomx_group_to_push')
+    
+    toast.success('重置成功', {
+      description: '所有数据已重置，请重新启动应用',
+      duration: 3000,
+    })
+    resetDialogOpen.value = false
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  } catch (e) {
+    console.error('Failed to reset data:', e)
+    toast.error('重置失败', {
+      description: '重置数据时发生错误',
+      duration: 2000,
+    })
   }
 }
 
@@ -150,6 +181,19 @@ const toggleEditMode = () => {
             </TooltipContent>
             </Tooltip>
         </TooltipProvider>
+        
+        <TooltipProvider>
+            <Tooltip>
+            <TooltipTrigger>
+                <Button class="mx-1/2 " size="sm" variant="ghost" @click="handleReset">
+                    <RotateCcw class="w-4 h-4"/>
+                </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>重置所有数据</p>
+            </TooltipContent>
+            </Tooltip>
+        </TooltipProvider>
         </div>  
 
         <Dialog v-model:open="deleteDialogOpen">
@@ -163,6 +207,21 @@ const toggleEditMode = () => {
             <DialogFooter>
               <Button variant="outline" @click="deleteDialogOpen = false">取消</Button>
               <Button variant="destructive" @click="confirmDelete">删除</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        <Dialog v-model:open="resetDialogOpen">
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>重置所有数据</DialogTitle>
+              <DialogDescription>
+                确定要重置所有数据吗？此操作将删除所有密码和群组配置，且无法撤销。
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" @click="resetDialogOpen = false">取消</Button>
+              <Button variant="destructive" @click="confirmReset">重置</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
