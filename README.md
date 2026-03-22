@@ -1,39 +1,25 @@
-# Tauri + Vue + TypeScript
+## 📦 WeComX
+### 项目简介
+WeComX 是一个基于 Tauri v2 构建的跨平台企业微信群聊推送服务的 GUI 客户端应用程序。它为用户提供了一个直观、易用的界面来管理企业微信群组并发送消息推送。
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-To setup:
-
-```bash
-npm i
-```
-
-then change follows:
-```json
-// src-tauri\tauri.conf.json
-{
-  "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Change new name",
-   // ...
-}
-
-// package.json
-{
-  "name": "Change new name",
-  // ...
-}
-
-//src-tauri/Cargo.toml
-[package]
-name = "Change new name"
-// ...
-```
-
-
-## Shadcn/UI
-
-See https://www.shadcn-vue.com/docs/components/dropdown-menu for components details.
-
-## Recommended IDE Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+### 核心功能 ✅ 已实现功能
+- 群组管理 - 用户可以方便地管理多个企业微信群组
+- 消息推送 - 支持发送文字消息和链接推送
+- 主题切换 - 支持亮色/暗色主题切换，适配不同使用场景
+- 本地存储 - 所有用户数据均保存在本地，确保数据隐私和安全
+- 管理员密码保护 - 设置管理员密码以防止误操作，提高安全性 
+- AI 润色 - 🚧 开发中功能：利用 AI 技术对推送内容进行优化和润色
+- 语音输入 - 🚧 开发中功能：支持语音输入功能，提升输入效率
+### 技术栈
+- 框架 : Tauri v2 (Rust + Web 前端)
+- 前端 : Vue.js (基于项目结构推断)
+- 跨平台 : 支持 Windows、macOS、Linux
+### 适用场景
+- 企业微信群消息自动化推送
+- 多群组统一管理和消息分发
+- 需要安全保护的群消息操作场景
+### 安全特性
+- 本地数据存储，无云端泄露风险
+- 管理员密码机制，防止误触和未授权操作
+### 未来规划
+项目正在持续开发中，后续将加入 AI 润色、语音输入等智能化功能，进一步提升用户体验和推送效率。

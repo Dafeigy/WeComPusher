@@ -261,6 +261,7 @@ const handleSetPassword = async () => {
     try {
         await setPassword(new_password.value)
         isPasswordSetFlag.value = true
+        isPasswordDialogClosedByUser.value = false
         showSetPasswordDialog.value = false
         new_password.value = ''
         confirm_password.value = ''
@@ -274,6 +275,17 @@ const handleSetPassword = async () => {
             description: '密码设置失败',
             duration: 2000,
         })
+    }
+}
+
+const isPasswordDialogClosedByUser = ref(false)
+
+const handleClosePasswordDialog = async (newOpen: boolean) => {
+    if (!newOpen && !isPasswordSetFlag.value && !isPasswordDialogClosedByUser.value) {
+        isPasswordDialogClosedByUser.value = true
+        const { getCurrentWindow } = await import('@tauri-apps/api/window')
+        const appWindow = getCurrentWindow()
+        await appWindow.close()
     }
 }
 
@@ -477,6 +489,7 @@ const handleSetPassword = async () => {
                     :close-on-overlay-click="false"
                 >
                     <DialogContent class="sm:max-w-md"
+                    :show-close-button="false"
                     @open-auto-focus="(e) => e.preventDefault()"
                     @escape-key-down="(e) => {e.preventDefault()}"
                     @interact-outside="(e)=>{e.preventDefault()}"
@@ -510,6 +523,9 @@ const handleSetPassword = async () => {
                         <DialogFooter>
                             <Button type="button" variant="default" @click="handleSetPassword">
                                 设置密码
+                            </Button>
+                            <Button type="button" variant="secondary" @click="handleClosePasswordDialog(false)">
+                                取消
                             </Button>
                         </DialogFooter>
                     </DialogContent>
