@@ -13,6 +13,7 @@ import DLButton from '@/components/general/ToggleLightDarkButton.vue'
 import SelectGroup from '@/components/SelectGroup.vue';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Checkbox from '@/components/ui/checkbox/Checkbox.vue';
 import {
   Tooltip,
   TooltipContent,
@@ -23,18 +24,25 @@ import { toast } from 'vue-sonner'
 import { Settings, Send, MessageSquareShare } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import { sendMessage } from '@/composables/sendMessage'
+import { useGroupData } from '@/composables/useGroupData'
 
 const router = useRouter();
+const { group_data } = useGroupData()
 
 const text_to_push = ref("")
 const group_to_push = ref<string[]>([])
 const dialogOpen = ref(false)
 
 const user_pwd = ref("")
-
+const atAllPrefenrece = ref(false)
 const GROUP_STORAGE_KEY = 'wecomx_group_to_push'
+
+const getGroupNameByUrl = (url: string) => {
+  const group = group_data.find(g => g.url === url)
+  return group ? group.name : url
+}
 
 onMounted(() => {
   const saved = localStorage.getItem(GROUP_STORAGE_KEY)
@@ -82,6 +90,7 @@ const send_group_message = async () => {
         const res = await sendMessage({
             url: group,
             text: text_to_push.value,
+            isAtAll: atAllPrefenrece.value
         })
         if (res.errcode !== 0){
             toast.error('错误', {
@@ -101,14 +110,16 @@ const send_group_message = async () => {
 
 const verify_pwd = ()=> {
     if (user_pwd.value == "123456"){
-        toast.success('发送成功', {
+        toast.success('已发起推送任务', {
         description: '推送任务已发起',
         duration:2000,
       })
+      user_pwd.value = ''
       send_group_message()
       dialogOpen.value = false
     }
     else{
+        user_pwd.value = ''
         toast.error('错误', {
         description: '密码输入错误',
         duration:2000,
@@ -125,9 +136,12 @@ const verify_pwd = ()=> {
                 <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
             </div>
         </header>
-        <div id="user" class="w-full px-4 py-2 h-76">
+        <div id="user" class="w-full px-4 py-2 h-76 flex relative">
             <textarea name="userinput" id="userinput" class="h-full w-full border rounded-md text-md p-4 resize-none"
             placeholder="输入群发内容..." v-model="text_to_push"></textarea>
+            <!-- <div class="z-25 px-4 absolute top-4 right-4 select-none">
+                <Button class="mx-0.5 " variant="ghost"><Settings class="w-2 h-2"/><p class="text-xs">切换至图文URL编辑</p></Button>
+            </div> -->
         </div>
         <div id="control" class="w-full flex h-12 items-center mb-0">
             <div id="navigation" class="w-1/2 px-4">
@@ -193,11 +207,13 @@ const verify_pwd = ()=> {
                                 </a>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p v-for="value in group_to_push">{{value}}</p>
+                                <p v-for="value in group_to_push">{{ getGroupNameByUrl(value) }}</p>
                             </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>中
                         </DialogDescription>
+                        <Label><Checkbox v-model="atAllPrefenrece" label="@所有人" />@所有人</Label>
+                        
                     </DialogHeader>
                     <div class="flex items-center gap-2">
                         <div class="grid flex-1 gap-2">
@@ -212,7 +228,7 @@ const verify_pwd = ()=> {
                             确认
                         </Button>
                         <DialogClose as-child>
-                        <Button type="button" variant="secondary">
+                        <Button type="button" variant="secondary" @click="()=>user_pwd = ''">
                             取消
                         </Button>
                         </DialogClose>
