@@ -97,18 +97,18 @@ const toggleNewsMode = () => {
 
 const isValidImageUrl = (url: string): string => {
   if (!url || url.trim() === '') {
-    return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+    return 'https://dummyimage.com/300x200/3f3f3f/fff&text=170px*417px'
   }
   
   try {
     const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
     if (!urlPattern.test(url)) {
-      return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+      return 'https://dummyimage.com/300x200/3f3f3f/fff&text=170px*417px'
     }
     
     return url
   } catch (e) {
-    return 'https://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png'
+    return 'https://dummyimage.com/300x200/3f3f3f/fff&text=170px*417px'
   }
 }
 
