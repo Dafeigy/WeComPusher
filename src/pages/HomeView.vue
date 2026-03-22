@@ -282,7 +282,7 @@ const handleSetPassword = async () => {
     <div id="container" class="w-screen h-screen flex flex-col transition-all! duration-400! ease-in-out! items-center">
         <header class="w-full h-16 flex items-center justify-start p-4">
             <div class="flex flex-col justify-start mx-1 ">
-                <p class="text-2xl font-bold flex justify-start items-center"><MessageSquareShare class="mr-2"/>WecomX</p>
+                <p class="text-2xl font-bold flex justify-start items-center text-blue-400"><MessageSquareShare class="mr-2 text-blue-400"/>WecomX</p>
                 <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
             </div>
         </header>

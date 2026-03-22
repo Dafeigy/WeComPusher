@@ -38,7 +38,7 @@ const toggleGroup = () => {
     <div 
         :class="[
             'h-10 hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 cursor-pointer transition-colors',
-            isChecked ? 'border-blue-600 bg-blue-50 dark:border-blue-900 dark:bg-blue-950' : 'border-input'
+            isChecked ? 'border-blue-500' : 'border-input'
         ]"
         @click="toggleGroup"
     >

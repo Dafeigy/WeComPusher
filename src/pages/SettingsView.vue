@@ -122,8 +122,8 @@ const toggleEditMode = () => {
             <TooltipProvider>
                 <Tooltip>
                 <TooltipTrigger>
-                    <Button variant="outline" size="icon-sm" @click="handleSave" v-if="!isEdit">
-                        <Save class=""></Save>
+                  <Button variant="outline" size="icon-sm" @click="handleSave" v-if="!isEdit">
+                        <Save></Save>
                     </Button>
                     <Button variant="outline" size="icon-sm" @click="toggleEditMode" v-else>
                         <Edit></Edit>
