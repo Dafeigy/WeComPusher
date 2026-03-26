@@ -137,7 +137,7 @@ const toggleEditMode = () => {
             </TooltipProvider>
             
         </div>
-        <div class="w-[90%] h-76! mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl" >
+        <div class="w-[90%] max-h-[calc(95vh-100px)] h-[95vh] mx-4 py-2 scroll-hidden overflow-y-auto rounded-xl" >
             <div class="flex px-4 w-full">
                 <Table class="">
                     <TableHeader >
@@ -170,7 +170,7 @@ const toggleEditMode = () => {
         
         </div>
         <!-- Split -->
-        <div class="w-full flex px-4 h-12 mb-1">
+        <div class="w-full flex px-4 h-12 absolute bottom-0">
         <TooltipProvider>
             <Tooltip>
             <TooltipTrigger>

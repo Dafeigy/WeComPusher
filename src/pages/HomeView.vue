@@ -298,8 +298,8 @@ const handleClosePasswordDialog = async (newOpen: boolean) => {
                 <p class="text-sm text-gray-400">一键帮你群发企业微信消息</p>
             </div>
         </header>
-        <div id="user" class="w-[95%] rounded-xl h-76 flex border  flex-col">
-            <div class="h-[1ch] text-md"></div>
+        <div id="user" class="mt-2 max-h-[calc(95vh-100px)] w-[98%]  h-[95vh] rounded-xl flex border  flex-col">
+            
             <Transition name="fade" mode="out-in">
                 <template v-if="!isNewsMode">
                     <textarea name="userinput" id="userinput" class="h-full w-full text-md resize-none px-[1ch] text-primary/72"
@@ -383,7 +383,7 @@ const handleClosePasswordDialog = async (newOpen: boolean) => {
                 
             </div>
         </div>
-        <div id="control" class="w-full flex h-12 items-center mb-0">
+        <div id="control" class="w-full flex h-12 items-center absolute bottom-0">
             <div id="navigation" class="w-1/2 px-4">
                 <TooltipProvider>
                     <Tooltip>
