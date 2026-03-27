@@ -24,10 +24,12 @@ import { toast } from 'vue-sonner'
 import { Settings, Send, MessageSquareShare, BookImage, WandSparkles } from 'lucide-vue-next';
 
 import { useRouter } from 'vue-router';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { sendMessage } from '@/composables/sendMessage'
 import { useGroupData } from '@/composables/useGroupData'
 import { isPasswordSet, setPassword, verifyPassword } from '@/composables/auth'
+import Vditor from 'vditor'
+import 'vditor/dist/index.css'
 
 const router = useRouter();
 const { group_data } = useGroupData()
@@ -35,6 +37,7 @@ const { group_data } = useGroupData()
 const text_to_push = ref("")
 const group_to_push = ref<string[]>([])
 const dialogOpen = ref(false)
+const vditorInstance = ref<Vditor | null>(null)
 
 const user_pwd = ref("")
 const atAllPrefenrece = ref(false)
@@ -76,11 +79,64 @@ onMounted(async () => {
   } catch (e) {
     console.error('Failed to check password status:', e)
   }
+
+  vditorInstance.value = new Vditor('vditor-container', {
+    height: '100%',
+    cache: {
+      enable: false
+    },
+    placeholder: '输入群发内容...支持 Markdown 语法',
+    value: text_to_push.value,
+    input: (value: string) => {
+      text_to_push.value = value
+    },
+    toolbar: [
+      'emoji',
+      'link',
+      'image',
+      'bold',
+      'italic',
+      'strike',
+      'list',
+      'ordered-list',
+      'check',
+      'quote',
+      'code',
+      'inline-code',
+      'table',
+      'undo',
+      'redo',
+      'edit-mode',
+      'content-theme',
+      'fullscreen',
+      'preview',
+      'both',
+      'outline',
+      'devtools',
+      'help'
+    ],
+    preview: {
+      delay: 500
+    }
+  })
+})
+
+onBeforeUnmount(() => {
+  if (vditorInstance.value) {
+    vditorInstance.value.destroy()
+    vditorInstance.value = null
+  }
 })
 
 watch(group_to_push, (newVal) => {
   localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(newVal))
 }, { deep: true })
+
+watch(text_to_push, (newVal) => {
+  if (vditorInstance.value && vditorInstance.value.getValue() !== newVal) {
+    vditorInstance.value.setValue(newVal)
+  }
+})
 
 const handleSettingsButtonClick = ()=>{
     router.push('/settings')
@@ -300,12 +356,12 @@ const handleClosePasswordDialog = async (newOpen: boolean) => {
         </header>
         <div id="user" class="mt-2 max-h-[calc(95vh-100px)] w-[98%]  h-[95vh] rounded-xl flex border  flex-col">
             
+            <div v-show="!isNewsMode" class="h-full w-full">
+                <div id="vditor-container" class="h-full w-full"></div>
+            </div>
+            
             <Transition name="fade" mode="out-in">
-                <template v-if="!isNewsMode">
-                    <textarea name="userinput" id="userinput" class="h-full w-full text-md resize-none px-[1ch] text-primary/72"
-                    placeholder="输入群发内容..." v-model="text_to_push"></textarea>
-                </template>
-                <template v-else>
+                <template v-if="isNewsMode">
                     <div class="h-full w-full px-[1ch] flex items-center justify-between">
                         <div class="grid grid-cols-1 gap-2 mt-[1ch] px-2">
                             <div class="flex">

@@ -10,7 +10,7 @@ export interface NewsArticle {
 export interface SendMessageOptions {
   url: string
   text?: string
-  msgtype?: 'text' | 'news'
+  msgtype?: 'markdown_v2' | 'news'
   news?: {
     articles: NewsArticle[]
   }
@@ -22,15 +22,15 @@ export interface SendMessageResponse {
   errmsg: string
 }
 
-export async function sendMessage({ url, text, msgtype = 'text', news, isAtAll = false }: SendMessageOptions): Promise<SendMessageResponse> {
+export async function sendMessage({ url, text, msgtype = 'markdown_v2', news, isAtAll = false }: SendMessageOptions): Promise<SendMessageResponse> {
     const atAll = isAtAll ? '@all' : ''
     
     const body: any = {
         msgtype: msgtype
     }
     
-    if (msgtype === 'text') {
-        body.text = {
+    if (msgtype === 'markdown_v2') {
+        body.markdown_v2 = {
             content: text,
             mentioned_list: [atAll],
         }
